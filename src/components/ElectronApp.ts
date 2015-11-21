@@ -6,12 +6,14 @@ import {Component, Control} from 'angular2/angular2';
 @Component({
   selector: 'app',
   template: `
+  <div class="pane">
     <h2>Hello from NgElectron, {{name}}!</h2>
     <form>
       <div class="form-group">
       <label>Enter Your Name</label>
       <input type="text" class="form-control" placeholder="Your Name Here" [ng-form-control]="nameInput">
-    </div>
+    </form>
+  </div>
   `,
   providers: [SampleService]
 })
