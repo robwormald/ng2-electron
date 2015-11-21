@@ -2,9 +2,9 @@ declare var require;
 const ipc = require('ipc');
 
 import {
-MessageBus,
-MessageBusSource,
-MessageBusSink
+  MessageBus,
+  MessageBusSource,
+  MessageBusSink
 } from "angular2/src/web_workers/shared/message_bus";
 
 import {NgZone, EventEmitter, Injectable} from 'angular2/core';
@@ -20,7 +20,9 @@ const ELECTRON_CHANNEL = '__ELECTRON_CHANNEL';
 
 @Injectable()
 export class ElectronMessageBus implements MessageBus {
-  constructor(public sink: ElectronMessageBusSink, public source: ElectronMessageBusSource, private env: string = ELECTRON_CLIENT) { }
+  constructor(public sink: ElectronMessageBusSink,
+              public source: ElectronMessageBusSource,
+              private env: string = ELECTRON_CLIENT) {}
 
   attachToZone(zone: NgZone): void {
     this.source.attachToZone(zone);
@@ -39,17 +41,16 @@ export class ElectronMessageBus implements MessageBus {
 
 export class ElectronMessageBusSink implements MessageBusSink {
   private _zone: NgZone;
-  private _channels: Map<string, _ElectronMessageChannel> = new Map<string, _ElectronMessageChannel>();
+  private _channels: Map<string, _ElectronMessageChannel> =
+      new Map<string, _ElectronMessageChannel>();
   private _messageBuffer: Array<Object> = [];
 
-  constructor(private _ipc: any) { }
+  constructor(private _ipc: any) {}
 
-  //TODO: fix zones
+  // TODO: fix zones
   attachToZone(zone: NgZone): void {
     this._zone = zone;
-    this._zone.onTurnDone.subscribe(() => {
-      this._handleOnEventDone()
-    });
+    this._zone.onTurnDone.subscribe(() => {this._handleOnEventDone()});
   }
 
   initChannel(channel: string, runInZone: boolean = true): void {
@@ -61,13 +62,12 @@ export class ElectronMessageBusSink implements MessageBusSink {
     this._channels.set(channel, _channel);
     _channel.emitter.subscribe((data: any) => {
 
-      var message = { channel: channel, message: data };
+      var message = {channel : channel, message : data};
 
       if (runInZone) {
-        console.log('buffer')
         this._messageBuffer.push(message);
       } else {
-        this._sendMessages([message]);
+        this._sendMessages([ message ]);
       }
     });
   }
@@ -82,32 +82,26 @@ export class ElectronMessageBusSink implements MessageBusSink {
   private _sendMessages(messages: any[]) {
     if (this._ipc.sendChannel) {
       this._ipc.sendChannel(ELECTRON_CHANNEL, messages);
-    }
-    else {
-
+    } else {
       this._ipc.send(ELECTRON_CHANNEL, messages);
     }
-
   }
   private _handleOnEventDone() {
-    console.log('flushing events')
     if (this._messageBuffer.length > 0) {
-
       this._sendMessages(this._messageBuffer);
       this._messageBuffer = [];
     }
   }
-
 }
 
 export class ElectronMessageBusSource implements MessageBusSource {
   private _zone: NgZone;
-  private _channels: Map<string, _ElectronMessageChannel> = new Map<string, _ElectronMessageChannel>();
+  private _channels: Map<string, _ElectronMessageChannel> =
+      new Map<string, _ElectronMessageChannel>();
 
   constructor(private _ipc?: any) {
-    this._ipc.on(ELECTRON_CHANNEL, (ev, data) => {
-      this._handleMessages(data || ev);
-    });
+    this._ipc.on(ELECTRON_CHANNEL,
+                 (ev, data) => { this._handleMessages(data || ev); });
   }
   attachToZone(zone: NgZone) { this._zone = zone; }
 
@@ -126,7 +120,8 @@ export class ElectronMessageBusSource implements MessageBusSource {
     if (this._channels.has(channel)) {
       return this._channels.get(channel).emitter;
     } else {
-      throw new Error(`${channel} is not set up. Did you forget to call initChannel?`);
+      throw new Error(
+          `${channel} is not set up. Did you forget to call initChannel?`);
     }
   }
 
@@ -141,14 +136,12 @@ export class ElectronMessageBusSource implements MessageBusSource {
     if (this._channels.has(channel)) {
       var channelInfo = this._channels.get(channel);
       this._zone.run(() => { channelInfo.emitter.next(data.message); });
-    }
-    else {
+    } else {
       throw new Error('unhandled message!');
     }
   }
-
 }
 
 class _ElectronMessageChannel {
-  constructor(public emitter: EventEmitter<any>, public runInZone: boolean) { }
+  constructor(public emitter: EventEmitter<any>, public runInZone: boolean) {}
 }

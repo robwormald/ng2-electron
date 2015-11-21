@@ -9,8 +9,8 @@ Implements a message bus similar to the built in web-worker postMessageBus.
 Super alpha. Really.
 
 Todos: 
-- fix zone.js integration
-- figure out why UI isn't updating (related?)
+- ~~fix zone.js integration~~
+- ~~figure out why UI isn't updating (related?)~~
 - investigate perf implications
 - figure out a cool name.
 
