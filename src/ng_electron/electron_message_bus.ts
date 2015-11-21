@@ -93,14 +93,11 @@ export class ElectronMessageBusSink implements MessageBusSink {
 
   }
   private _handleOnEventDone() {
-    console.log('flushing events')
     if (this._messageBuffer.length > 0) {
-
       this._sendMessages(this._messageBuffer);
       this._messageBuffer = [];
     }
   }
-
 }
 
 export class ElectronMessageBusSource implements MessageBusSource {
