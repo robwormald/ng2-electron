@@ -4,6 +4,8 @@ First pass at integrating Angular2 as an Electron Application using Angular's sp
 
 Core application runs in Node (todo: child process?) and uses Electron's IPC module to communicate with the render layer.
 
+Implements a message bus similar to the built in web-worker postMessageBus.
+
 Super alpha. Really.
 
 Todos: 
