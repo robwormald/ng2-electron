@@ -9,7 +9,7 @@ import {Component, Control} from 'angular2/angular2';
     <h2>Hello from NgElectron, {{name}}!</h2>
     <form>
       <div class="form-group">
-      <label>Email address</label>
+      <label>Enter Your Name</label>
       <input type="text" class="form-control" placeholder="Your Name Here" [ng-form-control]="nameInput">
     </div>
   `,
