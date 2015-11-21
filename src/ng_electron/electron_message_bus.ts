@@ -28,10 +28,6 @@ export class ElectronMessageBus implements MessageBus {
   }
 
   initChannel(channel: string, runInZone: boolean = false): void {
-    //TODO: fix zones
-    if (this.env === ELECTRON_WORKER) {
-      runInZone = false;
-    }
     this.source.initChannel(channel, runInZone);
     this.sink.initChannel(channel, runInZone);
   }
@@ -51,9 +47,9 @@ export class ElectronMessageBusSink implements MessageBusSink {
   //TODO: fix zones
   attachToZone(zone: NgZone): void {
     this._zone = zone;
-    this._zone.overrideOnEventDone(() => {
+    this._zone.onTurnDone.subscribe(() => {
       this._handleOnEventDone()
-    }, false);
+    });
   }
 
   initChannel(channel: string, runInZone: boolean = true): void {
@@ -68,6 +64,7 @@ export class ElectronMessageBusSink implements MessageBusSink {
       var message = { channel: channel, message: data };
 
       if (runInZone) {
+        console.log('buffer')
         this._messageBuffer.push(message);
       } else {
         this._sendMessages([message]);
@@ -93,11 +90,14 @@ export class ElectronMessageBusSink implements MessageBusSink {
 
   }
   private _handleOnEventDone() {
+    console.log('flushing events')
     if (this._messageBuffer.length > 0) {
+
       this._sendMessages(this._messageBuffer);
       this._messageBuffer = [];
     }
   }
+
 }
 
 export class ElectronMessageBusSource implements MessageBusSource {
@@ -140,11 +140,7 @@ export class ElectronMessageBusSource implements MessageBusSource {
     var channel = data.channel;
     if (this._channels.has(channel)) {
       var channelInfo = this._channels.get(channel);
-      if (channelInfo.runInZone) {
-        this._zone.run(() => { channelInfo.emitter.next(data.message); });
-      } else {
-        channelInfo.emitter.next(data.message);
-      }
+      this._zone.run(() => { channelInfo.emitter.next(data.message); });
     }
     else {
       throw new Error('unhandled message!');
