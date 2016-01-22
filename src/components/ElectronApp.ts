@@ -1,7 +1,8 @@
 declare var Notification;
 
 import {SampleService} from '../services/SampleService';
-import {Component, Control} from 'angular2/angular2';
+import {Component} from 'angular2/core';
+import {FORM_DIRECTIVES, Control} from 'angular2/common';
 
 @Component({
   selector: 'app',
@@ -11,11 +12,12 @@ import {Component, Control} from 'angular2/angular2';
     <form>
       <div class="form-group">
       <label>Enter Your Name</label>
-      <input type="text" class="form-control" placeholder="Your Name Here" [ng-form-control]="nameInput">
+      <input type="text" class="form-control" placeholder="Your Name Here" [ngFormControl]="nameInput">
     </form>
   </div>
   `,
-  providers: [SampleService]
+  providers: [SampleService],
+  directives: [FORM_DIRECTIVES]
 })
 export class ElectronApp {
   name:string = '';
