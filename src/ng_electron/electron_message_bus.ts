@@ -1,6 +1,3 @@
-declare var require;
-const ipc = require('ipc');
-
 import {
   MessageBus,
   MessageBusSource,

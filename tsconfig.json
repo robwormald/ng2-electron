@@ -9,6 +9,15 @@
         "outDir": "dist",
         "moduleResolution": "node"
     },
+    "files": [
+        "src/main.ts",
+        "src/worker.ts",
+        "src/components/ElectronApp.ts",
+        "src/ng_electron/electron_message_bus.ts",
+        "src/ng_electron/server.ts",
+        "src/ng_electron/ui.ts",
+        "src/services/SampleService.ts"
+    ],
     "exclude": [
         "node_modules"
     ]
