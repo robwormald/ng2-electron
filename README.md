@@ -1,5 +1,7 @@
 ### Angular2 Electron Integration
 
+## Note: this repo is deprecated and has been moved to https://github.com/angular/angular-electron
+
 First pass at integrating Angular2 as an Electron Application using Angular's split-rendering architecture.
 
 Core application runs in Node (todo: child process?) and uses Electron's IPC module to communicate with the render layer.
